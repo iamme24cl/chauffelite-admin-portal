@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signInWithEmailAndPassword, User } from "firebase/auth";
-import axios from "axios";
+import { verifyLogin } from "../services/authService";
 
 interface AuthContextType {
   user: User | null;
@@ -28,18 +28,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Get Firebase ID Token
-        const token = await firebaseUser.getIdToken();
-
-      // Verify with backend 
-      await axios.get("http://localhost:8000/auth/login", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-        
-
-        setUser(firebaseUser);
+        try {
+          await verifyLogin();
+          setUser(firebaseUser);
+        } catch (err) {
+          console.error("Backend login verification failed", err);
+        }
       } else {
         setUser(null);
       }
