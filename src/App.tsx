@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import DriversPage from "./pages/Drivers";
 
 function App() { 
   const { user, loading } = useAuth();
@@ -12,12 +13,15 @@ function App() {
   return (
     <Routes>
       {!user ? (
-          <Route path="/*" element={<Login />} />
+          <>
+            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </>
       ) : (
         <Route path="/" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
           {/* Placeholder for future pages */}
-          <Route path="/drivers" element={<div>Drivers</div>} />
+          <Route path="/drivers" element={<DriversPage />} />
           <Route path="/vehicles" element={<div>Vehicles</div>} />
           <Route path="/rides" element={<div>Rides</div>} /> 
           <Route path="/settings" element={<div>Settings</div>}/>
