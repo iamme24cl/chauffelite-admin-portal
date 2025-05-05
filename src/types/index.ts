@@ -23,5 +23,26 @@ export type DriverFormInput = {
     } 
 };
 
+export interface Vehicle {
+  id: string;
+  plate: string;
+  year: number;
+  make: string;
+  model: string;
+  vehicle_class: string;
+  company_id: string;
+  craeted_at: string;
+  updated_at: string;
+}
+
+export interface VehicleFormInput {
+  id?: string;
+  plate: string;
+  year: number;
+  make: string;
+  model: string;
+  vehicle_class: string;
+}
+
 
 
