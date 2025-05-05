@@ -16,7 +16,7 @@ export const createDriver = async (driver: any) => {
 };
 
 export const updateDriver = async (id: string, driver: any) => {
-  const res = await axiosInstance.put(`/drivers/${id}, driver`);
+  const res = await axiosInstance.patch(`/drivers/${id}`, driver);
   return res.data;
 };
 
