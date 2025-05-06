@@ -1,5 +1,5 @@
 import { Driver } from "../types";
-import {  PencilIcon, TrashIcon } from '@heroicons/react/24/solid'
+import {  PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 export default function DriverTable({
   drivers,
@@ -27,10 +27,10 @@ export default function DriverTable({
             <td className="px-4 py-2">{driver.user?.email}</td>
             <td className="px-4 py-2">{driver.user?.phone}</td>
             <td className="px-4 py-2 space-x-2">
-              <button onClick={() => onEdit(driver)} className="text-blue-600">
+              <button onClick={() => onEdit(driver)} className="text-blue-600 hover:text-blue-800">
                 <PencilIcon className="w-5 h-5 inline" />
               </button>
-              <button onClick={() => onDelete(driver.id)} className="text-red-600">
+              <button onClick={() => onDelete(driver.id)} className="text-red-600 hover:text-red-800">
                 <TrashIcon className="w-5 h-5 inline" />
               </button>
             </td>
