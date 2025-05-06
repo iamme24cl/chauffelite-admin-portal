@@ -2,7 +2,7 @@ import axiosInstance from "./axios";
 import { VehicleFormInput } from "../types";
 
 export const fetchVehicles = async () => {
-  const res = await axiosInstance.get("/vechicles");
+  const res = await axiosInstance.get("/vehicles");
   return res.data;
 }
 
@@ -12,7 +12,7 @@ export const createVehicle =  async (vehicle: VehicleFormInput) => {
 }
 
 export const updateVehicle = async (id: string, vehicle: VehicleFormInput) => {
-  const res = await axiosInstance.patch(`/vehicles/${id}`);
+  const res = await axiosInstance.patch(`/vehicles/${id}`, vehicle);
   return res.data;
 }
 
