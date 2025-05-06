@@ -8,10 +8,16 @@ export default function DriversPage() {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const load = async () => {
-    const res = await fetchDrivers();
-    setDrivers(res);
+    setLoading(true);
+    try {
+        const res = await fetchDrivers();
+        setDrivers(res);
+      } finally {
+        setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -74,15 +80,18 @@ export default function DriversPage() {
           + Add Driver
         </button>
       </div>
-
-      <DriverTable
-        drivers={drivers}
-        onEdit={(driver) => {
-          setEditingDriver(driver);
-          setModalOpen(true);
-        }}
-        onDelete={handleDelete}
-      />
+      {loading ? (
+        <div className="text-center py-6 text-gray-500">Loading drivers...</div>
+      ) : (
+        <DriverTable
+          drivers={drivers}
+          onEdit={(driver) => {
+            setEditingDriver(driver);
+            setModalOpen(true);
+          }}
+          onDelete={handleDelete}
+        />
+      )}
 
       <DriverFormModal
         visible={modalOpen}
