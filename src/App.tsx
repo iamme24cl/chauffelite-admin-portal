@@ -4,6 +4,8 @@ import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import DriversPage from "./pages/Drivers";
+import VehiclesPage from "./pages/VehiclesPage";
+import RidesPage from "./pages/RidesPage";
 
 function App() { 
   const { user, loading } = useAuth();
@@ -22,8 +24,8 @@ function App() {
           <Route index element={<Dashboard />} />
           {/* Placeholder for future pages */}
           <Route path="/drivers" element={<DriversPage />} />
-          <Route path="/vehicles" element={<div>Vehicles</div>} />
-          <Route path="/rides" element={<div>Rides</div>} /> 
+          <Route path="/vehicles" element={<VehiclesPage />} />
+          <Route path="/rides" element={<RidesPage />} /> 
           <Route path="/settings" element={<div>Settings</div>}/>
           <Route path="/*" element={<Navigate to="/" />} />
         </Route>
