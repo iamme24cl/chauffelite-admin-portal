@@ -31,7 +31,7 @@ export interface Vehicle {
   model: string;
   vehicle_class: string;
   company_id: string;
-  craeted_at: string;
+  created_at: string;
   updated_at: string;
 }
 
@@ -42,6 +42,35 @@ export interface VehicleFormInput {
   make: string;
   model: string;
   vehicle_class: string;
+}
+
+export interface Ride {
+  id: string;
+  company_id: string;
+  rider_id: string;
+  driver_id?: string;
+  pickup: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
+  dropoff: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
+  status: "REQUESTED" | "ACCEPTED" | "IN_PROGRESS" | "COMPLETED";
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RideSession {
+  driver_location: {
+    lat: number;
+    lng: number;
+  };
+  status: Ride["status"];
+  updated_at: number;
 }
 
 
