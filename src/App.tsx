@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import DriversPage from "./pages/Drivers";
 import VehiclesPage from "./pages/VehiclesPage";
 import RidesPage from "./pages/RidesPage";
+import CompanySettingsPage from "./pages/CompanySettings";
 
 function App() { 
   const { user, loading } = useAuth();
@@ -26,7 +27,7 @@ function App() {
           <Route path="/drivers" element={<DriversPage />} />
           <Route path="/vehicles" element={<VehiclesPage />} />
           <Route path="/rides" element={<RidesPage />} /> 
-          <Route path="/settings" element={<div>Settings</div>}/>
+          <Route path="/settings" element={<CompanySettingsPage />}/>
           <Route path="/*" element={<Navigate to="/" />} />
         </Route>
       )}
