@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase";
-import { onAuthStateChanged, signInWithEmailAndPassword, User } from "firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+import { User } from "../types";
 import { verifyLogin } from "../services/authService";
 
 interface AuthContextType {
@@ -29,8 +30,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          await verifyLogin();
-          setUser(firebaseUser);
+          const user = await verifyLogin();
+          setUser(user);
         } catch (err) {
           console.error("Backend login verification failed", err);
         }
