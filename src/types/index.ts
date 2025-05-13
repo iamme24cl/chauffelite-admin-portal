@@ -1,8 +1,10 @@
-interface User {
+export interface User {
   id: string;
   name: string;
   phone: string;
   email: string;
+  role: "ADMIN" | "CUSTOMER" | "DRIVER";
+  company_id?: string;
 }
 
 export interface Driver {
@@ -59,7 +61,7 @@ export interface Ride {
     lng: number;
     address: string;
   };
-  status: "REQUESTED" | "ACCEPTED" | "IN_PROGRESS" | "COMPLETED";
+  status: "REQUESTED" | "ACCEPTED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
   created_at: string;
   updated_at: string;
 }
@@ -71,6 +73,28 @@ export interface RideSession {
   };
   status: Ride["status"];
   updated_at: number;
+}
+
+export interface Company {
+  id: string;
+  name: string;
+  logo_url?: string;
+  theme: {
+    primary_color?: string;
+    [key: string]: any;
+  };
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CompanyForm {
+  name: string;
+  logo_url?: string;
+  theme?: {
+    primary_color?: string;
+    secondary_color?: string;
+    [key: string]: any;
+  }
 }
 
 
