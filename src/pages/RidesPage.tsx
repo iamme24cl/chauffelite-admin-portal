@@ -16,15 +16,6 @@ export default function RidesPage() {
     loadRides();
   }, []);
 
-  const handleAssign = async (rideId: string, driverId: string) => {
-    try {
-      await assignDriverToRide(rideId, driverId);
-      await loadRides();
-    } catch (err) {
-      alert("Failed to assign driver");
-    }
-  };
-
   return (
     <RideLiveModalController onStatusUpdate={loadRides}>
       {(openRideModal) => (
@@ -33,7 +24,6 @@ export default function RidesPage() {
           <RideTable
             rides={rides}
             onView={openRideModal} // ✅ open modal from table click
-            onAssign={handleAssign}
           />
         </div>
       )}

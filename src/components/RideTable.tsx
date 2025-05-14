@@ -3,11 +3,9 @@ import { Ride } from "../types";
 export default function RideTable({
   rides,
   onView,
-  onAssign,
 }: {
   rides: Ride[];
   onView: (ride: Ride) => void;
-   onAssign: (rideId: string, driverId: string) => Promise<void>;
 }) {
   return (
     <div className="overflow-x-auto">
