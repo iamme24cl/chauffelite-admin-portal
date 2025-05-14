@@ -11,6 +11,7 @@ export interface Driver {
   id: string;
   company_id: string;
   user: User; 
+  available: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -32,6 +33,7 @@ export interface Vehicle {
   make: string;
   model: string;
   vehicle_class: string;
+  available: boolean;
   company_id: string;
   created_at: string;
   updated_at: string;
