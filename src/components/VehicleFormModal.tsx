@@ -78,6 +78,24 @@ export default function VehicleFormModal({
             min={1900}
             max={2100}
           />
+          <select
+            value={vehicleClass}
+            onChange={(e) => setVehicleClass(e.target.value)}
+            className="w-full mb-4 p-2 border rounded"
+            required
+          >
+            <option value="">Select Vehicle Class</option>
+            <option value="Executive Sedan">Executive Sedan</option>
+            <option value="Luxury Sedan">Luxury Sedan</option>
+            <option value="SUV">SUV</option>
+            <option value="Stretch Limo">Stretch Limo</option>
+            <option value="Sprinter Van">Sprinter Van</option>
+            <option value="Mini Coach">Mini Coach</option>
+            <option value="Luxury Electric">Luxury Electric</option>
+            <option value="Party Bus">Party Bus</option>
+            <option value="Vintage Classic">Vintage Classic</option>
+            <option value="Wheelchair Accessible Van">Wheelchair Accessible Van</option>
+          </select>
           <div className="flex justify-end space-x-2">
             <button type="button" onClick={onClose} className="px-3 py-1 bg-gray-200 rounded">
               Cancel
