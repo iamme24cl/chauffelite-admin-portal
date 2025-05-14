@@ -1,6 +1,7 @@
-import { useEffect } from "react";
-import { Ride } from '../types';
-import { updateRideStatus } from "../services/rideService";
+import { useEffect, useState } from "react";
+import { Ride, Driver } from "../types";
+import { updateRideStatus, assignDriverToRide } from "../services/rideService";
+import { fetchDrivers } from "../services/driverService";
 import { useRideSession } from "../hooks/useRideSession";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { LatLngExpression, Icon } from "leaflet";
@@ -12,10 +13,9 @@ delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
   iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png"
+  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
 });
 
-// Custom icons
 const greenIcon = new Icon({
   iconUrl: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
   iconSize: [32, 32],
@@ -26,7 +26,6 @@ const redIcon = new Icon({
   iconSize: [32, 32],
 });
 
-// Helper: Fit map to bounds
 function FitMapToBounds({ points }: { points: LatLngExpression[] }) {
   const map = useMap();
   useEffect(() => {
@@ -52,21 +51,39 @@ export default function RideLiveModal({
     ? [session.driver_location.lat, session.driver_location.lng]
     : null;
 
-  const pickupLocation: LatLngExpression = [
-    ride.pickup.lat,
-    ride.pickup.lng,
-  ];
+  const pickupLocation: LatLngExpression = [ride.pickup.lat, ride.pickup.lng];
+  const dropoffLocation: LatLngExpression = [ride.dropoff.lat, ride.dropoff.lng];
+  const fitPoints: LatLngExpression[] = [pickupLocation, dropoffLocation, ...(driverLocation ? [driverLocation] : [])];
 
-  const dropoffLocation: LatLngExpression = [
-    ride.dropoff.lat,
-    ride.dropoff.lng,
-  ];
+  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [selectedDriverId, setSelectedDriverId] = useState<string>(ride.driver_id || "");
+  const [assignedDriverId, setAssignedDriverId] = useState<string>(ride.driver_id || "");
 
-  const fitPoints: LatLngExpression[] = [
-    pickupLocation,
-    dropoffLocation,
-    ...(driverLocation ? [driverLocation] : [])
-  ];
+  useEffect(() => {
+    const loadDrivers = async () => {
+      const data = await fetchDrivers();
+      setDrivers(data);
+    };
+    loadDrivers();
+  }, []);
+
+  useEffect(() => {
+    setAssignedDriverId(ride.driver_id || "");
+  }, [ride.driver_id]);
+
+  const handleAssignDriver = async () => {
+    if (selectedDriverId) {
+      try {
+        await assignDriverToRide(ride.id, selectedDriverId);
+        setAssignedDriverId(selectedDriverId);
+        onStatusUpdate();
+      } catch (err) {
+        console.error("Failed to assign driver", err);
+      }
+    }
+  };
+
+  const currentDriver = drivers.find((d) => d.id === assignedDriverId);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
@@ -76,6 +93,7 @@ export default function RideLiveModal({
         <p><strong>Status:</strong> {session?.status || ride.status}</p>
         <p><strong>Pickup:</strong> {ride.pickup.address}</p>
         <p><strong>Dropoff:</strong> {ride.dropoff.address}</p>
+        <p><strong>Current Driver:</strong> {currentDriver ? currentDriver.user.name : "Unassigned"}</p>
 
         <div className="my-4">
           <MapContainer
@@ -117,10 +135,10 @@ export default function RideLiveModal({
                 onClick={async () => {
                   try {
                     await updateRideStatus(ride.id, status);
-                    // alert(`Ride status updated to ${status}`);
                   } catch (err) {
                     console.error("Failed to update ride status", err);
                   }
+                  onClose();
                   onStatusUpdate();
                 }}
                 className="px-3 py-1 mr-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
@@ -128,6 +146,31 @@ export default function RideLiveModal({
                 Set {status}
               </button>
             ))}
+        </div>
+
+        <div className="mt-4">
+          <p className="font-semibold">Assign Driver:</p>
+          <div className="flex items-center space-x-2 mt-2">
+            <select
+              className="border px-2 py-1 rounded text-sm"
+              value={selectedDriverId}
+              onChange={(e) => setSelectedDriverId(e.target.value)}
+            >
+              <option value="">Select driver</option>
+              {drivers.map((driver) => (
+                <option key={driver.id} value={driver.id}>
+                  {driver.user.name || driver.id.slice(0, 6)}
+                </option>
+              ))}
+            </select>
+            <button
+              className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:opacity-50"
+              disabled={!selectedDriverId}
+              onClick={handleAssignDriver}
+            >
+              Assign
+            </button>
+          </div>
         </div>
 
         <div className="flex justify-end mt-6">
