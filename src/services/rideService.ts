@@ -11,6 +11,11 @@ export const updateRideStatus = async (rideId: string, status: string) => {
 }
 
 export const assignDriverToRide = async (rideId: string, driverId: string) => {
-  const res = await axiosInstance.patch(`/rides/${rideId}/assign`, { driver_id: driverId });
+  const res = await axiosInstance.patch(`/rides/${rideId}/assign-driver`, { driver_id: driverId });
+  return res.data;
+}
+
+export const assignVehicleToRide = async (rideId: string, vehicleId: string) => {
+  const res = await axiosInstance.patch(`/rides/${rideId}/assign-vehicle`, { vehicle_id: vehicleId });
   return res.data;
 }
