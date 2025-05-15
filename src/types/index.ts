@@ -51,8 +51,10 @@ export interface VehicleFormInput {
 export interface Ride {
   id: string;
   company_id: string;
+  vehicle_class: string;
   rider_id: string;
   driver_id?: string;
+  vehicle_id?: string;
   pickup: {
     lat: number;
     lng: number;

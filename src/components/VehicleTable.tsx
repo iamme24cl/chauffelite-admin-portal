@@ -18,6 +18,7 @@ export default function VehicleTable({
           <th className="px-4 py-2 border">Make</th>
           <th className="px-4 py-2 border">Model</th>
           <th className="px-4 py-2 border">Year</th>
+          <th className="px-4 py-2 border">Class</th>
           <th className="px-4 py-2 border">Availability</th>
           <th className="px-4 py-2 border text-center">Actions</th>
         </tr>
@@ -36,6 +37,7 @@ export default function VehicleTable({
               <td className="px-4 py-2 border">{vehicle.make}</td>
               <td className="px-4 py-2 border">{vehicle.model}</td>
               <td className="px-4 py-2 border">{vehicle.year}</td>
+              <td className="px-4 py-2 border">{vehicle.vehicle_class}</td>
               <td className="px-4 py-2 border">
                 {vehicle.available ? (
                   <span className="inline-block px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded">

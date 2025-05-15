@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Ride, Driver } from "../types";
-import { updateRideStatus, assignDriverToRide } from "../services/rideService";
+import { Ride, Driver, Vehicle } from "../types";
+import { updateRideStatus, assignDriverToRide, assignVehicleToRide } from "../services/rideService";
 import { fetchDrivers } from "../services/driverService";
+import { fetchVehicles } from "../services/vehicleService";
 import { useRideSession } from "../hooks/useRideSession";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { LatLngExpression, Icon } from "leaflet";
@@ -59,12 +60,18 @@ export default function RideLiveModal({
   const [selectedDriverId, setSelectedDriverId] = useState<string>(ride.driver_id || "");
   const [assignedDriverId, setAssignedDriverId] = useState<string>(ride.driver_id || "");
 
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string>(ride.vehicle_id || "");
+  const [assignedVehicleId, setAssignedVehicleId] = useState<string>(ride.vehicle_id || "");
+
   useEffect(() => {
-    const loadDrivers = async () => {
-      const data = await fetchDrivers();
-      setDrivers(data);
+    const load = async () => {
+      const driverData = await fetchDrivers();
+      const vehicleData = await fetchVehicles();
+      setDrivers(driverData);
+      setVehicles(vehicleData);
     };
-    loadDrivers();
+    load();
   }, []);
 
   useEffect(() => {
@@ -78,12 +85,25 @@ export default function RideLiveModal({
         setAssignedDriverId(selectedDriverId);
         onStatusUpdate();
       } catch (err) {
-        console.error("Failed to assign driver", err);
+        alert(`Failed to assign driver, ${err}`);
       }
     }
   };
 
+  const handleAssignVehicle = async () => {
+    if (selectedVehicleId) {
+      try {
+        await assignVehicleToRide(ride.id, selectedVehicleId);
+        setAssignedVehicleId(selectedVehicleId);
+        onStatusUpdate();
+      } catch (err) {
+        alert(`Failed to assign vehicle, ${err}`);
+      }
+    }
+  }
+
   const currentDriver = drivers.find((d) => d.id === assignedDriverId);
+  const currentVehicle = vehicles.find((v) => v.id === assignedVehicleId);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
@@ -94,6 +114,8 @@ export default function RideLiveModal({
         <p><strong>Pickup:</strong> {ride.pickup.address}</p>
         <p><strong>Dropoff:</strong> {ride.dropoff.address}</p>
         <p><strong>Current Driver:</strong> {currentDriver ? currentDriver.user.name : "Unassigned"}</p>
+        <p><strong>Current Vehicle:</strong> {currentVehicle ? `${currentVehicle.make} ${currentVehicle.model} (${currentVehicle.plate})` : "Unassigned"}</p>
+        <p><strong>Requested vehicle class:</strong> {ride.vehicle_class}</p>
 
         <div className="my-4">
           <MapContainer
@@ -172,6 +194,38 @@ export default function RideLiveModal({
             </button>
           </div>
         </div>
+
+        <div className="mt-4">
+          <p className="font-semibold">Assign Vehicle:</p>
+          <div className="flex items-center space-x-2 mt-2">
+            <select
+              className="border px-2 py-1 rounded text-sm"
+              value={selectedVehicleId}
+              onChange={(e) => setSelectedVehicleId(e.target.value)}
+            >
+              <option value="">Select vehicle</option>
+              {vehicles.filter((v) => v.vehicle_class === ride.vehicle_class).length === 0 ? (
+                <option disabled>No available vehicles of this class</option>
+              ) : (
+                vehicles
+                  .filter((vehicle) => vehicle.vehicle_class === ride.vehicle_class)
+                  .map((vehicle) => (
+                    <option key={vehicle.id} value={vehicle.id}>
+                      {vehicle.make} {vehicle.model} ({vehicle.plate})
+                    </option>
+                  ))
+              )}
+            </select>
+            <button
+              className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:opacity-50"
+              disabled={!selectedVehicleId}
+              onClick={handleAssignVehicle}
+            >
+              Assign
+            </button>
+          </div>
+        </div>
+
 
         <div className="flex justify-end mt-6">
           <button
