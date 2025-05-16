@@ -87,6 +87,16 @@ export interface Company {
     primary_color?: string;
     [key: string]: any;
   };
+  pricing?: {
+    base_fare: number;
+    per_mile: number;
+    per_minute: number;
+    night_surcharge: number;
+    city_modifier: number;
+    class_multiplier: {
+      suv: number;
+    }
+  }
   created_at: string;
   updated_at: string;
 }
@@ -98,6 +108,16 @@ export interface CompanyForm {
     primary_color?: string;
     secondary_color?: string;
     [key: string]: any;
+  };
+  pricing?: {
+    base_fare: number;
+    per_mile: number;
+    per_minute: number;
+    night_surcharge: number;
+    city_modifier: number;
+    class_multiplier: {
+      suv: number;
+    }
   }
 }
 
