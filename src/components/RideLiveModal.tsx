@@ -3,7 +3,7 @@ import { Ride, Driver, Vehicle } from "../types";
 import { updateRideStatus, assignDriverToRide, assignVehicleToRide } from "../services/rideService";
 import { fetchDrivers } from "../services/driverService";
 import { fetchVehicles } from "../services/vehicleService";
-import { useRideSession } from "../hooks/useRideSession";
+import { useRideSessionSocket } from "../hooks/useRideSessionSocket";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { LatLngExpression, Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -47,7 +47,9 @@ export default function RideLiveModal({
   onClose: () => void;
   onStatusUpdate: () => void;
 }) {
-  const session = useRideSession(ride.id);
+  const token = localStorage.getItem("accessToken") || "";
+  const session = useRideSessionSocket(ride.id, token);
+  
   const driverLocation: LatLngExpression | null = session?.driver_location
     ? [session.driver_location.lat, session.driver_location.lng]
     : null;
@@ -63,6 +65,8 @@ export default function RideLiveModal({
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState<string>(ride.vehicle_id || "");
   const [assignedVehicleId, setAssignedVehicleId] = useState<string>(ride.vehicle_id || "");
+
+  const isCompleted = (session?.status || ride.status) === "COMPLETED";
 
   useEffect(() => {
     const load = async () => {
@@ -187,7 +191,7 @@ export default function RideLiveModal({
             </select>
             <button
               className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:opacity-50"
-              disabled={!selectedDriverId}
+              disabled={!selectedDriverId || isCompleted}
               onClick={handleAssignDriver}
             >
               Assign
@@ -218,7 +222,7 @@ export default function RideLiveModal({
             </select>
             <button
               className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:opacity-50"
-              disabled={!selectedVehicleId}
+              disabled={!selectedVehicleId || isCompleted}
               onClick={handleAssignVehicle}
             >
               Assign

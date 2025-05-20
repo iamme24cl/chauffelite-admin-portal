@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Ride } from "../types";
-import { assignDriverToRide, fetchRides } from "../services/rideService";
+import { fetchRides } from "../services/rideService";
 import RideTable from "../components/RideTable";
-import RideLiveModalController from "../components/RideLiveModalController"; // ✅ use controller
+import RideLiveModalController from "../components/RideLiveModalController"; 
 
 export default function RidesPage() {
   const [rides, setRides] = useState<Ride[]>([]);
@@ -23,7 +23,7 @@ export default function RidesPage() {
           <h2 className="text-2xl font-semibold mb-4">Rides</h2>
           <RideTable
             rides={rides}
-            onView={openRideModal} // ✅ open modal from table click
+            onView={openRideModal}
           />
         </div>
       )}

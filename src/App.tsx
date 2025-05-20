@@ -23,7 +23,6 @@ function App() {
       ) : (
         <Route path="/" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
-          {/* Placeholder for future pages */}
           <Route path="/drivers" element={<DriversPage />} />
           <Route path="/vehicles" element={<VehiclesPage />} />
           <Route path="/rides" element={<RidesPage />} /> 
