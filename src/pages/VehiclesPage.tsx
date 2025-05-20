@@ -13,15 +13,12 @@ export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<VehicleFormInput | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
 
   const load = async () => {
-    setLoading(true);
     try {
       const res = await fetchVehicles();
       setVehicles(res);
     } finally {
-      setLoading(false);
     }
   }
 

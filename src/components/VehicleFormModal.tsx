@@ -18,13 +18,22 @@ export default function VehicleFormModal({
   const [year, setYear] = useState<number | "">("");
   const [vehicleClass, setVehicleClass] = useState("");
 
-  useEffect(() => {
-    setPlate(initial?.plate || "");
-    setMake(initial?.make || "");
-    setModel(initial?.model || "");
-    setYear(initial?.year || "");
-    setVehicleClass(initial?.vehicle_class || "");
-  }, [initial]);
+useEffect(() => {
+  if (visible && initial) {
+    setPlate(initial.plate || "");
+    setMake(initial.make || "");
+    setModel(initial.model || "");
+    setYear(initial.year || "");
+    setVehicleClass(initial.vehicle_class || "");
+  } else if (!visible) {
+    setPlate("");
+    setMake("");
+    setModel("");
+    setYear("");
+    setVehicleClass("");
+  }
+}, [initial, visible]);
+
 
   if (!visible) return null;
 

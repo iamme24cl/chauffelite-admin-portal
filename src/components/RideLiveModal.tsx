@@ -47,9 +47,9 @@ export default function RideLiveModal({
   onClose: () => void;
   onStatusUpdate: () => void;
 }) {
-  const token = localStorage.getItem("accessToken") || "";
+  const token = localStorage.getItem("access_token") || "";
   const session = useRideSessionSocket(ride.id, token);
-  
+
   const driverLocation: LatLngExpression | null = session?.driver_location
     ? [session.driver_location.lat, session.driver_location.lng]
     : null;
