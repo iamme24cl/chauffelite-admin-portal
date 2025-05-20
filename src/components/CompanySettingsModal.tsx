@@ -3,7 +3,6 @@ import { CompanyForm, Company } from "../types";
 import { updateCompany, uploadCompanyLogo } from '../services/companyService';
 import { useAuth } from "../context/AuthContext";
 
-
 export default function CompanySettingsModal({
   visible,
   onClose,
@@ -23,6 +22,16 @@ export default function CompanySettingsModal({
       primary_color: initial.theme?.primary_color || "#000000",
       secondary_color: initial.theme?.secondary_color || "#ffffff",
     },
+    pricing: {
+      base_fare: initial.pricing?.base_fare ?? 50,
+      per_mile: initial.pricing?.per_mile ?? 3.5,
+      per_minute: initial.pricing?.per_minute ?? 1,
+      night_surcharge: initial.pricing?.night_surcharge ?? 10,
+      city_modifier: initial.pricing?.city_modifier ?? 0,
+      class_multiplier: {
+        suv: initial.pricing?.class_multiplier?.suv ?? 1.25,
+      },
+    },
   });
   const [loading, setLoading] = useState(false);
 
@@ -34,7 +43,7 @@ export default function CompanySettingsModal({
 
   const handleThemeChange = (key: string, value: string) => {
     setForm((prev) => ({
-      ...prev, 
+      ...prev,
       theme: {
         ...prev.theme,
         [key]: value,
@@ -42,26 +51,49 @@ export default function CompanySettingsModal({
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user?.company_id) return;
+  // Define pricing fields as strongly typed tuple
+  const pricingFields = [
+    { label: "Base Fare", key: "base_fare" },
+    { label: "Per Mile Rate", key: "per_mile" },
+    { label: "Per Minute Rate", key: "per_minute" },
+    { label: "Night Surcharge", key: "night_surcharge" },
+    { label: "City Modifier (%)", key: "city_modifier" },
+  ] as const;
 
-    setLoading(true);
-    try {
-      await updateCompany(user.company_id, form);
-      onSave();
-    } catch (err) {
-      console.error("Failed to update company", err);
-    } finally {
-      setLoading(false);
-    }
+  // Derive type for pricing keys
+  type PricingKey = typeof pricingFields[number]["key"];
+
+  const handlePricingChange = (key: PricingKey, value: number) => {
+    setForm((prev) => ({
+      ...prev,
+      pricing: {
+        ...prev.pricing!,
+        [key]: value,
+      },
+    }));
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded shadow w-[500px]">
+      <div className="bg-white p-6 rounded shadow w-[500px] max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-semibold mb-4">Edit Company Settings</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            if (!user?.company_id) return;
+            setLoading(true);
+            try {
+              await updateCompany(user.company_id, form);
+              onSave();
+            } catch (err) {
+              console.error("Failed to update company", err);
+            } finally {
+              setLoading(false);
+            }
+          }}
+          className="space-y-5"
+        >
+          {/* Company Name */}
           <div>
             <label className="block mb-1 font-medium">Company Name</label>
             <input
@@ -73,6 +105,7 @@ export default function CompanySettingsModal({
             />
           </div>
 
+          {/* Logo Upload */}
           <div>
             <label className="block mb-1 font-medium">Upload Logo</label>
             <input
@@ -99,27 +132,70 @@ export default function CompanySettingsModal({
             )}
           </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Primary Color</label>
-            <input
-              type="color"
-              value={form.theme?.primary_color}
-              onChange={(e) => handleThemeChange("primary_color", e.target.value)}
-              className="w-20 h-10"
-            />
+          {/* Theme Colors */}
+          <div className="flex gap-4">
+            <div>
+              <label className="block mb-1 font-medium">Primary Color</label>
+              <input
+                type="color"
+                value={form.theme?.primary_color || "#000000"}
+                onChange={(e) => handleThemeChange("primary_color", e.target.value)}
+                className="w-20 h-10"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">Secondary Color</label>
+              <input
+                type="color"
+                value={form.theme?.secondary_color || "#ffffff"}
+                onChange={(e) => handleThemeChange("secondary_color", e.target.value)}
+                className="w-20 h-10"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Secondary Color</label>
-            <input
-              type="color"
-              value={form.theme?.secondary_color}
-              onChange={(e) => handleThemeChange("secondary_color", e.target.value)}
-              className="w-20 h-10"
-            />
+          {/* Pricing Settings */}
+          <div className="border-t pt-4 mt-4">
+            <h3 className="text-lg font-medium mb-2">Pricing Settings</h3>
+
+            {pricingFields.map(({ label, key }) => (
+              <div key={key}>
+                <label className="block mb-1 font-medium">{label}</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={form.pricing?.[key] ?? ""}
+                  onChange={(e) => handlePricingChange(key, parseFloat(e.target.value))}
+                  className="w-full border px-3 py-2 rounded"
+                />
+              </div>
+            ))}
+
+            <div>
+              <label className="block mb-1 font-medium">SUV Class Multiplier</label>
+              <input
+                type="number"
+                step="0.01"
+                value={form.pricing?.class_multiplier?.suv ?? ""}
+                onChange={(e) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    pricing: {
+                      ...prev.pricing!,
+                      class_multiplier: {
+                        ...prev.pricing?.class_multiplier,
+                        suv: parseFloat(e.target.value),
+                      },
+                    },
+                  }))
+                }
+                className="w-full border px-3 py-2 rounded"
+              />
+            </div>
           </div>
 
-          <div className="flex justify-end gap-2 mt-4">
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
               onClick={onClose}
@@ -138,5 +214,5 @@ export default function CompanySettingsModal({
         </form>
       </div>
     </div>
-  )
+  );
 }
