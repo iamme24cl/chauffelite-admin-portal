@@ -1,7 +1,7 @@
 import axiosInstance from "./axios";
 
 export const fetchDrivers = async () => {
-  const res = await axiosInstance.get("/drivers");
+  const res = await axiosInstance.get("/drivers/");
   return res.data;
 };
 
@@ -11,7 +11,7 @@ export const fetchDriver = async (id: string) => {
 };
 
 export const createDriver = async (driver: any) => {
-  const res = await axiosInstance.post("/drivers", driver);
+  const res = await axiosInstance.post("/drivers/", driver);
   return res.data;
 };
 

@@ -2,12 +2,12 @@ import axiosInstance from "./axios";
 import { VehicleFormInput } from "../types";
 
 export const fetchVehicles = async () => {
-  const res = await axiosInstance.get("/vehicles");
+  const res = await axiosInstance.get("/vehicles/");
   return res.data;
 }
 
 export const createVehicle =  async (vehicle: VehicleFormInput) => {
-  const res = await axiosInstance.post("/vehicles", vehicle);
+  const res = await axiosInstance.post("/vehicles/", vehicle);
   return res.data;
 }
 
