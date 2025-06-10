@@ -131,7 +131,6 @@ export default function RideLiveModal({
             : "—"}
         </p>
 
-
         <div className="my-4">
           <MapContainer
             center={pickupLocation}
