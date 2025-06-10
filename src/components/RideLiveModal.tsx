@@ -120,6 +120,17 @@ export default function RideLiveModal({
         <p><strong>Current Driver:</strong> {currentDriver ? currentDriver.user.name : "Unassigned"}</p>
         <p><strong>Current Vehicle:</strong> {currentVehicle ? `${currentVehicle.make} ${currentVehicle.model} (${currentVehicle.plate})` : "Unassigned"}</p>
         <p><strong>Requested vehicle class:</strong> {ride.vehicle_class}</p>
+        <p><strong>Trip Type:</strong> {ride.trip_type ?? "—"}</p>
+        <p><strong>Fare:</strong> {ride.fare ? `$${ride.fare.toFixed(2)}` : "—"}</p>
+        <p>
+          <strong>Scheduled:</strong>{" "}
+          {ride.scheduled_start
+            ? `${new Date(ride.scheduled_start).toLocaleString()} → ${
+                ride.scheduled_end ? new Date(ride.scheduled_end).toLocaleString() : "—"
+              }`
+            : "—"}
+        </p>
+
 
         <div className="my-4">
           <MapContainer

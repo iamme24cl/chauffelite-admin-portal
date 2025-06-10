@@ -86,6 +86,10 @@ export interface Ride {
     address: string;
   };
   status: "REQUESTED" | "ACCEPTED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+  trip_type?: "ONE_WAY" | "ROUND_TRIP" | "HOURLY"; 
+  fare?: number;                                 
+  scheduled_start?: string;                      
+  scheduled_end?: string;                        
   created_at: string;
   updated_at: string;
 }
