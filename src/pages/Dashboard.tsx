@@ -43,7 +43,7 @@ export default function Dashboard() {
   return (
     <RideLiveModalController onStatusUpdate={load}>
       {(openRideModal) => (
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-6">
           {/* Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <SummaryCard title="Drivers" value={drivers.length} icon={UserGroupIcon} />
@@ -56,34 +56,36 @@ export default function Dashboard() {
           <div className="bg-white rounded shadow p-4">
             <h2 className="text-xl font-semibold mb-4">Today's Rides</h2>
             <div className="overflow-x-auto">
-              <table className="min-w-full text-left">
-                <thead>
-                  <tr className="bg-gray-100 text-sm text-gray-600">
+              <table className="min-w-full text-sm text-left">
+                <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
+                  <tr>
                     <th className="px-4 py-2">Pickup</th>
                     <th className="px-4 py-2">Dropoff</th>
                     <th className="px-4 py-2">Status</th>
                     <th className="px-4 py-2">Created</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-gray-800">
                   {rides.map((ride) => (
                     <tr
                       key={ride.id}
-                      className="border-t text-sm cursor-pointer hover:bg-gray-100"
+                      className="border-t hover:bg-gray-50 cursor-pointer"
                       onClick={() => openRideModal(ride)}
                     >
                       <td className="px-4 py-2">{ride.pickup.address}</td>
                       <td className="px-4 py-2">{ride.dropoff.address}</td>
                       <td className="px-4 py-2">
-                        <span className={`px-2 py-1 rounded text-white text-xs font-semibold ${
-                          ride.status === "IN_PROGRESS"
-                            ? "bg-blue-500"
-                            : ride.status === "COMPLETED"
-                            ? "bg-green-500"
-                            : ride.status === "ACCEPTED"
-                            ? "bg-yellow-500 text-black"
-                            : "bg-gray-400"
-                        }`}>
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-semibold ${
+                            ride.status === "IN_PROGRESS"
+                              ? "bg-blue-500 text-white"
+                              : ride.status === "COMPLETED"
+                              ? "bg-green-500 text-white"
+                              : ride.status === "ACCEPTED"
+                              ? "bg-yellow-400 text-black"
+                              : "bg-gray-400 text-white"
+                          }`}
+                        >
                           {ride.status}
                         </span>
                       </td>
