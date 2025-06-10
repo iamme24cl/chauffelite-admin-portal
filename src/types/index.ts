@@ -46,6 +46,26 @@ export interface VehicleFormInput {
   make: string;
   model: string;
   vehicle_class: string;
+  pricing?: {
+    ONE_WAY?: {
+      base_fare: number;
+      per_mile: number;
+      per_minute: number;
+      night_surcharge?: number;
+      city_modifier?: number;
+    };
+    ROUND_TRIP?: {
+      base_fare: number;
+      per_mile: number;
+      per_minute: number;
+      night_surcharge?: number;
+      city_modifier?: number;
+    };
+    HOURLY?: {
+      hourly_rate?: number;
+      min_hours?: number;
+    };
+  };
 }
 
 export interface Ride {

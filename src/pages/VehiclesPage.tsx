@@ -57,14 +57,7 @@ export default function VehiclesPage() {
       <VehicleTable 
         vehicles={vehicles}
         onEdit={(vehicle) => {
-          setEditingVehicle({
-            id: vehicle.id,
-            plate: vehicle.plate,
-            make: vehicle.make,
-            model: vehicle.model,
-            year: vehicle.year,
-            vehicle_class: vehicle.vehicle_class
-          });
+          setEditingVehicle(vehicle);
           setModalOpen(true)
         }}
         onDelete={handleDelete}
