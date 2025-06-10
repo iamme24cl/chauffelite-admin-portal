@@ -1,14 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { RideSession } from "../types";
-
-const WS_BASE = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000/ws";
+import { WS_BASE_URL } from "../constants";
 
 export function useRideSessionSocket(rideId: string, token: string): RideSession | null {
   const [session, setSession] = useState<RideSession | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const url = `${WS_BASE}/rides/${rideId}?token=${token}`;
+    const url = `${WS_BASE_URL}/rides/${rideId}?token=${token}`;
     const ws = new WebSocket(url);
     wsRef.current = ws;
 
