@@ -22,16 +22,6 @@ export default function CompanySettingsModal({
       primary_color: initial.theme?.primary_color || "#000000",
       secondary_color: initial.theme?.secondary_color || "#ffffff",
     },
-    pricing: {
-      base_fare: initial.pricing?.base_fare ?? 50,
-      per_mile: initial.pricing?.per_mile ?? 3.5,
-      per_minute: initial.pricing?.per_minute ?? 1,
-      night_surcharge: initial.pricing?.night_surcharge ?? 10,
-      city_modifier: initial.pricing?.city_modifier ?? 0,
-      class_multiplier: {
-        suv: initial.pricing?.class_multiplier?.suv ?? 1.25,
-      },
-    },
   });
   const [loading, setLoading] = useState(false);
 
@@ -46,28 +36,6 @@ export default function CompanySettingsModal({
       ...prev,
       theme: {
         ...prev.theme,
-        [key]: value,
-      },
-    }));
-  };
-
-  // Define pricing fields as strongly typed tuple
-  const pricingFields = [
-    { label: "Base Fare", key: "base_fare" },
-    { label: "Per Mile Rate", key: "per_mile" },
-    { label: "Per Minute Rate", key: "per_minute" },
-    { label: "Night Surcharge", key: "night_surcharge" },
-    { label: "City Modifier (%)", key: "city_modifier" },
-  ] as const;
-
-  // Derive type for pricing keys
-  type PricingKey = typeof pricingFields[number]["key"];
-
-  const handlePricingChange = (key: PricingKey, value: number) => {
-    setForm((prev) => ({
-      ...prev,
-      pricing: {
-        ...prev.pricing!,
         [key]: value,
       },
     }));
@@ -150,46 +118,6 @@ export default function CompanySettingsModal({
                 value={form.theme?.secondary_color || "#ffffff"}
                 onChange={(e) => handleThemeChange("secondary_color", e.target.value)}
                 className="w-20 h-10"
-              />
-            </div>
-          </div>
-
-          {/* Pricing Settings */}
-          <div className="border-t pt-4 mt-4">
-            <h3 className="text-lg font-medium mb-2">Pricing Settings</h3>
-
-            {pricingFields.map(({ label, key }) => (
-              <div key={key}>
-                <label className="block mb-1 font-medium">{label}</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={form.pricing?.[key] ?? ""}
-                  onChange={(e) => handlePricingChange(key, parseFloat(e.target.value))}
-                  className="w-full border px-3 py-2 rounded"
-                />
-              </div>
-            ))}
-
-            <div>
-              <label className="block mb-1 font-medium">SUV Class Multiplier</label>
-              <input
-                type="number"
-                step="0.01"
-                value={form.pricing?.class_multiplier?.suv ?? ""}
-                onChange={(e) =>
-                  setForm((prev) => ({
-                    ...prev,
-                    pricing: {
-                      ...prev.pricing!,
-                      class_multiplier: {
-                        ...prev.pricing?.class_multiplier,
-                        suv: parseFloat(e.target.value),
-                      },
-                    },
-                  }))
-                }
-                className="w-full border px-3 py-2 rounded"
               />
             </div>
           </div>

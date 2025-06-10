@@ -49,18 +49,6 @@ export default function CompanySettingsPage() {
         </div>
       </section>
 
-      <section>
-        <h3 className="text-lg font-medium text-gray-700">Pricing</h3>
-        <div className="mt-2 space-y-1 text-sm text-gray-800">
-          <p><strong>Base Fare:</strong> ${company.pricing?.base_fare ?? "—"}</p>
-          <p><strong>Per Mile:</strong> ${company.pricing?.per_mile ?? "—"}</p>
-          <p><strong>Per Minute:</strong> ${company.pricing?.per_minute ?? "—"}</p>
-          <p><strong>Night Surcharge:</strong> ${company.pricing?.night_surcharge ?? "—"}</p>
-          <p><strong>City Modifier:</strong> {company.pricing?.city_modifier ?? "—"}%</p>
-          <p><strong>SUV Multiplier:</strong> ×{company.pricing?.class_multiplier?.suv ?? "—"}</p>
-        </div>
-      </section>
-
       <CompanySettingsModal
         visible={modalOpen}
         onClose={() => setModalOpen(false)}
