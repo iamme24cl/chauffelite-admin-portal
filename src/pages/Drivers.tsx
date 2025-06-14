@@ -13,10 +13,10 @@ export default function DriversPage() {
   const load = async () => {
     setLoading(true);
     try {
-        const res = await fetchDrivers();
-        setDrivers(res);
-      } finally {
-        setLoading(false);
+      const res = await fetchDrivers();
+      setDrivers(res);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -25,64 +25,37 @@ export default function DriversPage() {
   }, []);
 
   const handleSave = async (driver: DriverFormInput) => {
-    const { user } = driver;
-  
     const isUpdate = !!editingDriver;
-  
+
     if (isUpdate) {
-      await updateDriver(editingDriver!.id, {
-        user: {
-          name: user.name,
-          phone: user.phone,
-          email: user.email,
-        },
-      });
+      await updateDriver(editingDriver!.id, driver);
     } else {
-      const { email, password, name, phone } = user;
-      if (!email || !password) {
-        alert("Email and password are required to create driver user.");
-        return;
-      }
-  
-      try {
-        await createDriver({
-          user: { name, phone, email, password },
-        });
-      } catch (error) {
-        console.error("Error creating driver:", error);
-        alert(`Driver creation failed. See console for details.`);
-        return;
-      }
+      await createDriver(driver);
     }
-    await load();
+
+    setModalOpen(false);
     setEditingDriver(null);
+    await load();
   };
 
   const handleDelete = async (id: string) => {
-    const confirm = window.confirm("Are you sure you want to delete this driver? This action is irreversible.");
-    if (!confirm) return;
-
     await deleteDriver(id);
     await load();
   };
 
   return (
-    <div>
-      <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-semibold">Drivers</h2>
+    <div className="px-4 sm:px-6 py-6 max-w-screen-xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl font-semibold text-gray-800">Drivers</h1>
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-          onClick={() => {
-            setEditingDriver(null);
-            setModalOpen(true);
-          }}
+          onClick={() => setModalOpen(true)}
+          className="text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          + Add Driver
+          Add Driver
         </button>
       </div>
-      {loading ? (
-        <div className="text-center py-6 text-gray-500">Loading drivers...</div>
-      ) : (
+
+      <div className="bg-white rounded shadow p-4 overflow-x-auto">
         <DriverTable
           drivers={drivers}
           onEdit={(driver) => {
@@ -91,13 +64,16 @@ export default function DriversPage() {
           }}
           onDelete={handleDelete}
         />
-      )}
+      </div>
 
       <DriverFormModal
         visible={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          setModalOpen(false);
+          setEditingDriver(null);
+        }}
         onSubmit={handleSave}
-        initial={editingDriver ? { user: editingDriver.user } : undefined}
+        initial={editingDriver || undefined}
       />
     </div>
   );
