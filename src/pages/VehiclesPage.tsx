@@ -41,17 +41,17 @@ export default function VehiclesPage() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-semibold">Vehicles</h2>
+    <div className="px-4 sm:px-6 py-6 max-w-screen-xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-gray-800">Vehicles</h2>
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           onClick={() => {
             setEditingVehicle(undefined);
             setModalOpen(true);
           }}
         >
-          + Add Vehicle
+          Add Vehicle
         </button>
       </div>
       <VehicleTable 

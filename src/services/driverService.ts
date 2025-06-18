@@ -24,3 +24,11 @@ export const deleteDriver = async (id: string) => {
   const res = await axiosInstance.delete(`/drivers/${id}`);
   return res.data;
 };
+
+export async function toggleDriverAvailability(driverId: string, current: boolean) {
+  const res = await axiosInstance.patch(`/drivers/${driverId}/availability`, {
+    available: !current,
+  });
+  return res.data;
+}
+

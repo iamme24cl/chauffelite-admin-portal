@@ -82,6 +82,7 @@ export default function RideLiveModal({
     setAssignedDriverId(ride.driver_id || "");
   }, [ride.driver_id]);
 
+
   const handleAssignDriver = async () => {
     if (!selectedDriverId) return;
     try {
@@ -120,6 +121,7 @@ export default function RideLiveModal({
         <h2 className="text-2xl font-semibold mb-4">Live Ride Overview</h2>
 
         <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-800 mb-4">
+          
           <p><strong>Status:</strong> {session?.status || ride.status}</p>
           <p><strong>Trip Type:</strong> {ride.trip_type ?? "—"}</p>
           <p><strong>Fare:</strong> {ride.fare ? `$${ride.fare.toFixed(2)}` : "—"}</p>

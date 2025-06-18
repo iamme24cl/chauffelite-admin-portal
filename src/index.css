@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  @apply bg-gray-100 text-gray-900 overflow-x-hidden;
+}
+
+/* 👇 Shrink the title font and fix toolbar layout */
+.fc .fc-toolbar-title {
+  font-size: 1rem !important;
+  font-weight: 600;
+}
+
+.fc .fc-toolbar {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fc .fc-toolbar-chunk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+

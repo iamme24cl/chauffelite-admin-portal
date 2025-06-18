@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
 import DriverTable from '../components/DriverTable';
 import DriverFormModal from '../components/DriverFormModal';
-import { fetchDrivers, createDriver, updateDriver, deleteDriver } from '../services/driverService';
+import {
+  fetchDrivers,
+  createDriver,
+  updateDriver,
+  deleteDriver,
+  toggleDriverAvailability, // ✅ imported correctly
+} from '../services/driverService';
 import { Driver, DriverFormInput } from '../types';
 
 export default function DriversPage() {
@@ -43,19 +49,24 @@ export default function DriversPage() {
     await load();
   };
 
+  const handleToggleAvailability = async (driverId: string, current: boolean) => {
+    await toggleDriverAvailability(driverId, current); // ✅ correct usage
+    await load();
+  };
+
   return (
     <div className="px-4 sm:px-6 py-6 max-w-screen-xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-semibold text-gray-800">Drivers</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold text-gray-800">Driver Management</h1>
         <button
           onClick={() => setModalOpen(true)}
-          className="text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition"
         >
           Add Driver
         </button>
       </div>
 
-      <div className="bg-white rounded shadow p-4 overflow-x-auto">
+      <div className="bg-white rounded-xl shadow-lg p-6 overflow-x-auto">
         <DriverTable
           drivers={drivers}
           onEdit={(driver) => {
@@ -63,6 +74,7 @@ export default function DriversPage() {
             setModalOpen(true);
           }}
           onDelete={handleDelete}
+          onToggleAvailability={handleToggleAvailability}
         />
       </div>
 
