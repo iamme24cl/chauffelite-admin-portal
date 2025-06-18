@@ -6,6 +6,7 @@ import {
   createVehicle,
   updateVehicle,
   deleteVehicle,
+  toggleVehicleAvailability,
 } from "../services/vehicleService";
 import { Vehicle, VehicleFormInput } from "../types";
 
@@ -54,13 +55,17 @@ export default function VehiclesPage() {
           Add Vehicle
         </button>
       </div>
-      <VehicleTable 
+      <VehicleTable
         vehicles={vehicles}
         onEdit={(vehicle) => {
           setEditingVehicle(vehicle);
-          setModalOpen(true)
+          setModalOpen(true);
         }}
         onDelete={handleDelete}
+        onToggleAvailability={async (vehicleId, current) => {
+          await toggleVehicleAvailability(vehicleId, current);
+          await load();
+        }}
       />
       <VehicleFormModal 
         visible={modalOpen}

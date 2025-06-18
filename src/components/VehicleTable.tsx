@@ -1,15 +1,19 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { Vehicle } from "../types";
 
+type Props = {
+  vehicles: Vehicle[];
+  onEdit: (vehicle: Vehicle) => void;
+  onDelete: (id: string) => void;
+  onToggleAvailability: (id: string, current: boolean) => void;
+};
+
 export default function VehicleTable({
   vehicles,
   onEdit,
   onDelete,
-}: {
-  vehicles: Vehicle[];
-  onEdit: (vehicle: Vehicle) => void;
-  onDelete: (id: string) => void;
-}) {
+  onToggleAvailability,
+}: Props) {
   return (
     <table className="w-full text-left border rounded shadow-sm">
       <thead className="bg-gray-50 text-gray-700 text-sm uppercase">
@@ -26,7 +30,7 @@ export default function VehicleTable({
       <tbody>
         {vehicles.length === 0 ? (
           <tr>
-            <td colSpan={6} className="text-center p-4 text-gray-500">
+            <td colSpan={7} className="text-center p-4 text-gray-500">
               No vehicles found.
             </td>
           </tr>
@@ -39,15 +43,16 @@ export default function VehicleTable({
               <td className="px-4 py-2 border">{vehicle.year}</td>
               <td className="px-4 py-2 border">{vehicle.vehicle_class}</td>
               <td className="px-4 py-2 border">
-                {vehicle.available ? (
-                  <span className="inline-block px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded">
-                    Available
-                  </span>
-                ) : (
-                  <span className="inline-block px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded">
-                    Unavailable
-                  </span>
-                )}
+                <label className="relative inline-block w-11 h-6 cursor-pointer" title={vehicle.available ? 'Set Unavailable' : 'Set Available'}>
+                  <input
+                    type="checkbox"
+                    checked={vehicle.available}
+                    onChange={() => onToggleAvailability(vehicle.id, vehicle.available)}
+                    className="sr-only peer"
+                  />
+                  <div className="absolute inset-0 bg-gray-300 rounded-full transition peer-checked:bg-green-500" />
+                  <div className="absolute top-0.5 left-0.5 h-5 w-5 bg-white rounded-full shadow transition peer-checked:translate-x-5" />
+                </label>
               </td>
               <td className="px-4 py-2 border text-center space-x-2">
                 <button

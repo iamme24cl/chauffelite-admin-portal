@@ -20,3 +20,10 @@ export const deleteVehicle = async (id: string) => {
   const res = await axiosInstance.delete(`/vehicles/${id}`);
   return res.data;
 }
+
+export async function toggleVehicleAvailability(vehicleId: string, current: boolean) {
+  const res = await axiosInstance.patch(`/vehicles/${vehicleId}`, {
+    available: !current,
+  });
+  return res.data;
+}
