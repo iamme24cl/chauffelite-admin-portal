@@ -3,6 +3,10 @@ import { useAuth } from "../context/AuthContext";
 import { fetchCompany } from "../services/companyService";
 import { Company } from "../types";
 import CompanySettingsModal from "../components/CompanySettingsModal";
+import TeamSettingsCard from "../components/settings/TeamSettingsCard";
+import PaymentSettingsCard from "../components/settings/PaymentSettingsCard";
+import NotificationsCard from "../components/settings/NotificationsCard";
+import SupportSettingsCard from "../components/settings/SupportSettingsCard";
 
 export default function CompanySettingsPage() {
   const { user } = useAuth();
@@ -20,35 +24,57 @@ export default function CompanySettingsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.company_id]);
 
-  if (!company) return <p className="text-center py-10">Loading company settings...</p>;
+  if (!company) {
+    return (
+      <div className="max-w-5xl mx-auto px-6 py-10">
+        <p className="text-center text-sm text-gray-500">Loading company settings...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold">Company Settings</h2>
+    <div className="max-w-5xl mx-auto px-6 py-10 space-y-8">
+      {/* Header */}
+      <div className="flex justify-between items-center px-1">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Company Settings</h1>
+          <p className="text-sm text-gray-500 mt-1">Manage your public profile, team, billing, and preferences</p>
+        </div>
         <button
           onClick={() => setModalOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-md shadow-sm"
         >
-          Edit
+          Edit Profile
         </button>
       </div>
 
-      <section>
-        <h3 className="text-lg font-medium text-gray-700">General</h3>
-        <div className="mt-2 space-y-2">
-          <p><strong>Name:</strong> {company.name}</p>
-          <p><strong>Logo:</strong></p>
-          {company.logo_url ? (
-            <img src={company.logo_url} alt="Company Logo" className="h-16 border rounded" />
-          ) : (
-            <p className="text-gray-500">No logo uploaded</p>
-          )}
-          <p><strong>Primary Color:</strong> {company.theme?.primary_color}</p>
-          <p><strong>Secondary Color:</strong> {company.theme?.secondary_color}</p>
+      {/* Company Info Card */}
+      <div className="bg-white border rounded-lg shadow p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <p className="text-sm text-gray-500 mb-1">Company Name</p>
+          <p className="text-base font-medium text-gray-800">{company.name}</p>
         </div>
-      </section>
+        <div>
+          <p className="text-sm text-gray-500 mb-1">Logo</p>
+          {company.logo_url ? (
+            <img
+              src={company.logo_url}
+              alt="Company Logo"
+              className="h-20 w-auto rounded border bg-white object-contain"
+            />
+          ) : (
+            <p className="text-gray-400 italic">No logo uploaded</p>
+          )}
+        </div>
+      </div>
 
+      {/* Other Settings Sections */}
+      <TeamSettingsCard />
+      <PaymentSettingsCard />
+      <NotificationsCard />
+      <SupportSettingsCard />
+
+      {/* Modal */}
       <CompanySettingsModal
         visible={modalOpen}
         onClose={() => setModalOpen(false)}

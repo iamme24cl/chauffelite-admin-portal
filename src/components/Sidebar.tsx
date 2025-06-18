@@ -16,7 +16,7 @@ export default function Sidebar() {
   return (
     <aside className="flex flex-col h-full">
       <div className="p-4">
-        <h2 className="text-xl font-bold mb-8">ChauffElite</h2>
+        <h2 className="text-xl font-bold mb-8">ChauffElite Partner</h2>
         <nav className="space-y-2">
           {links.map((link) => (
             <Link

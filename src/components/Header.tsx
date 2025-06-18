@@ -18,7 +18,7 @@ export default function Header() {
     <header className="bg-white border-b shadow-md md:hidden">
       <div className="px-4 py-4 w-full">
         <div className="max-w-screen-xl mx-auto flex justify-between items-center">
-          <h1 className="text-lg font-bold text-gray-800 truncate">ChauffElite Admin</h1>
+          <h1 className="text-lg font-bold text-gray-800 truncate">ChauffElite Partner</h1>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="text-2xl text-gray-600 focus:outline-none"
