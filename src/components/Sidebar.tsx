@@ -33,15 +33,15 @@ export default function Sidebar() {
             </Link>
           ))}
         </nav>
-         <div className="mt-auto p-4 border-t">
-            <button
-              onClick={logout}
-              className="w-full text-center text-sm text-white bg-red-500 px-4 py-2 rounded hover:bg-red-600"
-            >
-              Sign Out
-            </button>
-          </div>
       </div>
+        <div className="mt-auto p-4 border-t">
+          <button
+            onClick={logout}
+            className="w-full text-center text-sm text-white bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+          >
+            Sign Out
+          </button>
+        </div>
     </aside>
   );
 }
