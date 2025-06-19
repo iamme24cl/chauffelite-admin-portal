@@ -57,7 +57,7 @@ export default function DriversPage() {
   return (
     <div className="px-4 sm:px-6 py-6 max-w-screen-xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold text-gray-800">Driver Management</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Drivers</h1>
         <button
           onClick={() => setModalOpen(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition"

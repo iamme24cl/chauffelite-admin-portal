@@ -5,7 +5,7 @@ const links = [
   { name: "Dashboard", path: "/" },
   { name: "Drivers", path: "/drivers" },
   { name: "Vehicles", path: "/vehicles" },
-  { name: "Rides", path: "/rides" },
+  { name: "Reservations", path: "/rides" },
   { name: "Settings", path: "/settings" },
 ];
 

@@ -44,7 +44,7 @@ export default function VehiclesPage() {
   return (
     <div className="px-4 sm:px-6 py-6 max-w-screen-xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">Vehicles</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Vehicles</h2>
         <button
           className="text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           onClick={() => {

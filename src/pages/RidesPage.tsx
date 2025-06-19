@@ -58,7 +58,7 @@ export default function RidesPage() {
         <div className="space-y-6 py-6 px-4 sm:px-6 lg:px-8">
           {/* Header + Filters */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h2 className="text-2xl font-semibold">Reservations</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Reservations</h2>
             <div className="flex flex-wrap gap-2 w-full sm:w-auto">
               {["", "REQUESTED", "ACCEPTED", "IN_PROGRESS", "COMPLETED"].map(
                 (status) => (
