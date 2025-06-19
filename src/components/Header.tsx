@@ -8,6 +8,7 @@ const navItems = [
   { name: "Vehicles", path: "/vehicles" },
   { name: "Rides", path: "/rides" },
   { name: "Settings", path: "/settings" },
+  { name: "Flight Check", path: "/flight-check" },
 ];
 
 export default function Header() {

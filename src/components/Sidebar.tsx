@@ -7,6 +7,7 @@ const links = [
   { name: "Vehicles", path: "/vehicles" },
   { name: "Reservations", path: "/rides" },
   { name: "Settings", path: "/settings" },
+  { name: "Flight Check", path: "/flight-check" },
 ];
 
 export default function Sidebar() {
