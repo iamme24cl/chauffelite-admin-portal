@@ -13,14 +13,14 @@ import { Vehicle, VehicleFormInput } from "../types";
 export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingVehicle, setEditingVehicle] = useState<VehicleFormInput | undefined>(undefined);
+  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
 
   const load = async () => {
     try {
       const res = await fetchVehicles();
       setVehicles(res);
-    } finally {
-      // optional: add error logging
+    } catch (err) {
+      console.error("Failed to load vehicles", err);
     }
   };
 
@@ -29,11 +29,16 @@ export default function VehiclesPage() {
   }, []);
 
   const handleSave = async (vehicle: VehicleFormInput) => {
-    if (vehicle.id) {
-      await updateVehicle(vehicle.id, vehicle);
+    const isUpdate = !!editingVehicle;
+
+    if (isUpdate && editingVehicle?.id) {
+      await updateVehicle(editingVehicle.id, vehicle);
     } else {
       await createVehicle(vehicle);
     }
+
+    setModalOpen(false);
+    setEditingVehicle(null);
     await load();
   };
 
@@ -42,19 +47,30 @@ export default function VehiclesPage() {
     await load();
   };
 
+  const handleToggleAvailability = async (vehicleId: string, current: boolean) => {
+    try {
+      await toggleVehicleAvailability(vehicleId, current);
+      setVehicles((prev) =>
+        prev.map((v) =>
+          v.id === vehicleId ? { ...v, available: !current } : v
+        )
+      );
+    } catch (err) {
+      console.error("Failed to toggle availability", err);
+    }
+  };
+
+
   return (
-    <div className="px-4 sm:px-8 py-8 max-w-7xl mx-auto w-full">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-800">Vehicles</h2>
-          <p className="text-sm text-gray-500">Manage your fleet and availability</p>
-        </div>
+    <div className="px-4 sm:px-6 py-6 max-w-screen-xl mx-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold text-gray-800">Vehicles</h1>
         <button
-          className="text-sm bg-blue-600 text-white px-5 py-2.5 rounded-md hover:bg-blue-700 transition shadow"
           onClick={() => {
-            setEditingVehicle(undefined);
+            setEditingVehicle(null);
             setModalOpen(true);
           }}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition"
         >
           + Add Vehicle
         </button>
@@ -68,18 +84,18 @@ export default function VehiclesPage() {
             setModalOpen(true);
           }}
           onDelete={handleDelete}
-          onToggleAvailability={async (vehicleId, current) => {
-            await toggleVehicleAvailability(vehicleId, current);
-            await load();
-          }}
+          onToggleAvailability={handleToggleAvailability}
         />
       </div>
 
       <VehicleFormModal
         visible={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          setModalOpen(false);
+          setEditingVehicle(null);
+        }}
         onSubmit={handleSave}
-        initial={editingVehicle}
+        initial={editingVehicle || undefined}
       />
     </div>
   );

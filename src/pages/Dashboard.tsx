@@ -30,7 +30,19 @@ export default function Dashboard() {
 
     setDrivers(d);
     setVehicles(v);
-    setRides(r);
+
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setUTCDate(today.getUTCDate() + 1);
+
+    const todayRides = r.filter((ride: Ride) => {
+      if (!ride.scheduled_start) return false;
+      const rideDate = new Date(ride.scheduled_start);
+      return rideDate >= today && rideDate < tomorrow;
+    });
+
+    setRides(todayRides);
   };
 
   useEffect(() => {
@@ -100,7 +112,11 @@ export default function Dashboard() {
                         </span>
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap">
-                        {new Date(ride.created_at).toLocaleTimeString()}
+                        {new Date(ride.created_at).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                       </td>
                     </tr>
                   ))}

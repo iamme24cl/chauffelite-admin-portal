@@ -6,7 +6,7 @@ import {
   createDriver,
   updateDriver,
   deleteDriver,
-  toggleDriverAvailability, // ✅ imported correctly
+  toggleDriverAvailability,
 } from '../services/driverService';
 import { Driver, DriverFormInput } from '../types';
 
@@ -14,15 +14,14 @@ export default function DriversPage() {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
   const load = async () => {
-    setLoading(true);
     try {
       const res = await fetchDrivers();
       setDrivers(res);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error("Failed to load drivers", err);
     }
   };
 
@@ -31,10 +30,8 @@ export default function DriversPage() {
   }, []);
 
   const handleSave = async (driver: DriverFormInput) => {
-    const isUpdate = !!editingDriver;
-
-    if (isUpdate) {
-      await updateDriver(editingDriver!.id, driver);
+    if (editingDriver) {
+      await updateDriver(editingDriver.id, driver);
     } else {
       await createDriver(driver);
     }
@@ -50,8 +47,19 @@ export default function DriversPage() {
   };
 
   const handleToggleAvailability = async (driverId: string, current: boolean) => {
-    await toggleDriverAvailability(driverId, current); // ✅ correct usage
-    await load();
+    try {
+      setTogglingId(driverId);
+      await toggleDriverAvailability(driverId, current);
+      setDrivers((prev) =>
+        prev.map((d) =>
+          d.id === driverId ? { ...d, available: !current } : d
+        )
+      );
+    } catch (err) {
+      console.error("Failed to toggle driver availability", err);
+    } finally {
+      setTogglingId(null);
+    }
   };
 
   return (
@@ -75,6 +83,7 @@ export default function DriversPage() {
           }}
           onDelete={handleDelete}
           onToggleAvailability={handleToggleAvailability}
+          togglingId={togglingId}
         />
       </div>
 
