@@ -42,11 +42,6 @@ export default function VehiclesPage() {
     await load();
   };
 
-  const handleDelete = async (id: string) => {
-    await deleteVehicle(id);
-    await load();
-  };
-
   const handleToggleAvailability = async (vehicleId: string, current: boolean) => {
     try {
       await toggleVehicleAvailability(vehicleId, current);
@@ -72,7 +67,7 @@ export default function VehiclesPage() {
           }}
           className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition"
         >
-          + Add Vehicle
+          Add Vehicle
         </button>
       </div>
 
@@ -83,7 +78,6 @@ export default function VehiclesPage() {
             setEditingVehicle(vehicle);
             setModalOpen(true);
           }}
-          onDelete={handleDelete}
           onToggleAvailability={handleToggleAvailability}
         />
       </div>

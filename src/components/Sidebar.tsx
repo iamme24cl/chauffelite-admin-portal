@@ -3,9 +3,9 @@ import { useAuth } from "../context/AuthContext";
 
 const links = [
   { name: "Dashboard", path: "/" },
+  { name: "Reservations", path: "/rides" },
   { name: "Drivers", path: "/drivers" },
   { name: "Vehicles", path: "/vehicles" },
-  { name: "Reservations", path: "/rides" },
   { name: "Settings", path: "/settings" },
   { name: "Flight Check", path: "/flight-check" },
 ];

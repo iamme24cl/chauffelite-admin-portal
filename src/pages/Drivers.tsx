@@ -41,11 +41,6 @@ export default function DriversPage() {
     await load();
   };
 
-  const handleDelete = async (id: string) => {
-    await deleteDriver(id);
-    await load();
-  };
-
   const handleToggleAvailability = async (driverId: string, current: boolean) => {
     try {
       setTogglingId(driverId);
@@ -81,7 +76,6 @@ export default function DriversPage() {
             setEditingDriver(driver);
             setModalOpen(true);
           }}
-          onDelete={handleDelete}
           onToggleAvailability={handleToggleAvailability}
           togglingId={togglingId}
         />

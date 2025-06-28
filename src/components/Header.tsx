@@ -4,9 +4,9 @@ import { useState } from "react";
 
 const navItems = [
   { name: "Dashboard", path: "/dashboard" },
+  { name: "Reservations", path: "/rides" },
   { name: "Drivers", path: "/drivers" },
   { name: "Vehicles", path: "/vehicles" },
-  { name: "Rides", path: "/rides" },
   { name: "Settings", path: "/settings" },
   { name: "Flight Check", path: "/flight-check" },
 ];
