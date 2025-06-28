@@ -54,7 +54,7 @@ export default function VehicleFormModal({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded shadow w-full max-w-xl max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">{initial ? "Edit Vehicle" : "Add Vehicle"}</h2>
+        <h2 className="text-xl font-bold mb-4">{initial ? "Update Vehicle" : "Add Vehicle"}</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault();

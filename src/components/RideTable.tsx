@@ -1,5 +1,13 @@
 import { Ride } from "../types";
 
+const STATUS_COLORS: Record<string, string> = {
+  REQUESTED: "bg-indigo-500",
+  ACCEPTED: "bg-orange-500",
+  IN_PROGRESS: "bg-blue-600",
+  COMPLETED: "bg-green-500",
+  CANCELLED: "bg-gray-500",
+};
+
 export default function RideTable({
   rides,
   onView,
@@ -39,16 +47,8 @@ export default function RideTable({
                 </td>
                 <td className="px-4 py-2">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      ride.status === "IN_PROGRESS"
-                        ? "bg-blue-500 text-white"
-                        : ride.status === "COMPLETED"
-                        ? "bg-green-500 text-white"
-                        : ride.status === "ACCEPTED"
-                        ? "bg-yellow-400 text-black"
-                        : ride.status === "REQUESTED"
-                        ? "bg-gray-500 text-white"
-                        : "bg-red-500 text-white"
+                    className={`px-2 py-1 rounded-full text-xs font-medium text-white ${
+                      STATUS_COLORS[ride.status] || "bg-red-500"
                     }`}
                   >
                     {ride.status}
