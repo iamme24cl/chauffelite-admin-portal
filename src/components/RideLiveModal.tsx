@@ -4,8 +4,18 @@ import { updateRideStatus, assignDriverToRide, assignVehicleToRide } from "../se
 import { fetchDrivers } from "../services/driverService";
 import { fetchVehicles } from "../services/vehicleService";
 import { useRideSessionSocket } from "../hooks/useRideSessionSocket";
+import { formatVehicleClass, formatRideStatus } from "../utils/formatters";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { LatLngExpression, Icon } from "leaflet";
+import {
+  BadgeCheck,
+  Car,
+  MapPin,
+  DollarSign,
+  User,
+  Calendar,
+  X,
+} from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -36,6 +46,7 @@ function FitMapToBounds({ points }: { points: LatLngExpression[] }) {
   }, [points, map]);
   return null;
 }
+
 
 export default function RideLiveModal({
   ride,
@@ -82,7 +93,6 @@ export default function RideLiveModal({
     setAssignedDriverId(ride.driver_id || "");
   }, [ride.driver_id]);
 
-
   const handleAssignDriver = async () => {
     if (!selectedDriverId) return;
     try {
@@ -116,36 +126,38 @@ export default function RideLiveModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white p-6 rounded shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-semibold mb-4">Live Ride Overview</h2>
-
-        <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-800 mb-4">
-          
-          <p><strong>Status:</strong> {session?.status || ride.status}</p>
-          <p><strong>Trip Type:</strong> {ride.trip_type ?? "—"}</p>
-          <p><strong>Fare:</strong> {ride.fare ? `$${ride.fare.toFixed(2)}` : "—"}</p>
-          <p>
-            <strong>Scheduled:</strong>{" "}
-            {ride.scheduled_start
-              ? `${new Date(ride.scheduled_start).toLocaleString()} → ${
-                  ride.scheduled_end ? new Date(ride.scheduled_end).toLocaleString() : "—"
-                }`
-              : "—"}
-          </p>
-          <p><strong>Pickup:</strong> {ride.pickup.address}</p>
-          <p><strong>Dropoff:</strong> {ride.dropoff.address}</p>
-          <p><strong>Vehicle Class:</strong> {ride.vehicle_class}</p>
-          <p><strong>Driver:</strong> {currentDriver?.user?.name || "Unassigned"}</p>
-          <p><strong>Vehicle:</strong> {currentVehicle ? `${currentVehicle.make} ${currentVehicle.model} (${currentVehicle.plate})` : "Unassigned"}</p>
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-fadeIn">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <BadgeCheck className="w-6 h-6 text-blue-600" />
+            Live Ride Overview
+          </h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <X className="w-6 h-6" />
+          </button>
         </div>
 
-        <div className="mb-6">
-          <MapContainer center={pickupLocation} zoom={13} scrollWheelZoom={false} style={{ height: "300px", width: "100%" }}>
-            <TileLayer
-              attribution='&copy; OpenStreetMap contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+        {/* Ride Details */}
+        <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-800 mb-6">
+          <div className="space-y-2">
+            <p className="flex items-center gap-2"><BadgeCheck className="w-4 h-4" /> <strong>Status:</strong> {formatRideStatus(session?.status || ride.status)}</p>
+            <p className="flex items-center gap-2"><Car className="w-4 h-4" /> <strong>Class:</strong> {formatVehicleClass(ride.vehicle_class)}</p>
+            <p className="flex items-center gap-2"><DollarSign className="w-4 h-4" /> <strong>Fare:</strong> {ride.fare ? `$${ride.fare.toFixed(2)}` : "—"}</p>
+            <p className="flex items-center gap-2"><Calendar className="w-4 h-4" /> <strong>Scheduled:</strong> {ride.scheduled_start ? `${new Date(ride.scheduled_start).toLocaleString()} → ${ride.scheduled_end ? new Date(ride.scheduled_end).toLocaleString() : "—"}` : "—"}</p>
+          </div>
+          <div className="space-y-2">
+            <p className="flex items-center gap-2"><MapPin className="w-4 h-4" /> <strong>Pickup:</strong> {ride.pickup.address}</p>
+            <p className="flex items-center gap-2"><MapPin className="w-4 h-4 text-red-400" /> <strong>Dropoff:</strong> {ride.dropoff.address}</p>
+            <p className="flex items-center gap-2"><User className="w-4 h-4" /> <strong>Driver:</strong> {currentDriver?.user?.name || "Unassigned"}</p>
+            <p className="flex items-center gap-2"><Car className="w-4 h-4" /> <strong>Vehicle:</strong> {currentVehicle ? `${currentVehicle.make} ${currentVehicle.model} (${currentVehicle.plate})` : "Unassigned"}</p>
+          </div>
+        </div>
+
+        {/* Map */}
+        <div className="mb-8">
+          <MapContainer center={pickupLocation} zoom={13} scrollWheelZoom={false} style={{ height: "300px", width: "100%" }} className="rounded-lg overflow-hidden shadow border">
+            <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={pickupLocation} icon={greenIcon}><Popup>Pickup</Popup></Marker>
             <Marker position={dropoffLocation} icon={redIcon}><Popup>Dropoff</Popup></Marker>
             {driverLocation && <Marker position={driverLocation}><Popup>Driver Location</Popup></Marker>}
@@ -153,89 +165,49 @@ export default function RideLiveModal({
           </MapContainer>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-6">
+        {/* Assignments */}
+        <div className="grid sm:grid-cols-2 gap-6 mb-8">
           <div>
-            <p className="font-semibold mb-1">Assign Driver:</p>
-            <div className="flex items-center space-x-2">
-              <select
-                className="border px-2 py-1 rounded text-sm w-full"
-                value={selectedDriverId}
-                onChange={(e) => setSelectedDriverId(e.target.value)}
-              >
+            <p className="text-sm font-medium mb-2">Assign Driver</p>
+            <div className="flex gap-2">
+              <select className="w-full border px-3 py-2 rounded text-sm" value={selectedDriverId} onChange={(e) => setSelectedDriverId(e.target.value)}>
                 <option value="">Select driver</option>
                 {drivers.map((driver) => (
-                  <option key={driver.id} value={driver.id}>
-                    {driver.user.name || driver.id.slice(0, 6)}
-                  </option>
+                  <option key={driver.id} value={driver.id}>{driver.user.name || driver.id.slice(0, 6)}</option>
                 ))}
               </select>
-              <button
-                onClick={handleAssignDriver}
-                disabled={!selectedDriverId || isCompleted}
-                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 disabled:opacity-50"
-              >
-                Assign
-              </button>
+              <button onClick={handleAssignDriver} disabled={!selectedDriverId || isCompleted} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow text-sm disabled:opacity-50">Assign</button>
             </div>
           </div>
 
           <div>
-            <p className="font-semibold mb-1">Assign Vehicle:</p>
-            <div className="flex items-center space-x-2">
-              <select
-                className="border px-2 py-1 rounded text-sm w-full"
-                value={selectedVehicleId}
-                onChange={(e) => setSelectedVehicleId(e.target.value)}
-              >
+            <p className="text-sm font-medium mb-2">Assign Vehicle</p>
+            <div className="flex gap-2">
+              <select className="w-full border px-3 py-2 rounded text-sm" value={selectedVehicleId} onChange={(e) => setSelectedVehicleId(e.target.value)}>
                 <option value="">Select vehicle</option>
-                {vehicles
-                  .filter((v) => v.vehicle_class === ride.vehicle_class)
-                  .map((vehicle) => (
-                    <option key={vehicle.id} value={vehicle.id}>
-                      {vehicle.make} {vehicle.model} ({vehicle.plate})
-                    </option>
-                  ))}
+                {vehicles.filter((v) => v.vehicle_class.key === ride.vehicle_class).map((vehicle) => (
+                  <option key={vehicle.id} value={vehicle.id}>{vehicle.make} {vehicle.model} ({vehicle.plate})</option>
+                ))}
               </select>
-              <button
-                onClick={handleAssignVehicle}
-                disabled={!selectedVehicleId || isCompleted}
-                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 disabled:opacity-50"
-              >
-                Assign
-              </button>
+              <button onClick={handleAssignVehicle} disabled={!selectedVehicleId || isCompleted} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow text-sm disabled:opacity-50">Assign</button>
             </div>
           </div>
         </div>
 
-        <div className="mt-6">
-          <p className="font-semibold mb-2">Set Status:</p>
+        {/* Status */}
+        <div className="mb-8">
+          <p className="text-sm font-medium mb-2">Set Ride Status</p>
           <div className="flex flex-wrap gap-2">
             {["REQUESTED", "ACCEPTED", "IN_PROGRESS", "COMPLETED"]
               .filter((s) => s !== ride.status)
               .map((status) => (
-                <button
-                  key={status}
-                  onClick={async () => {
-                    try {
-                      await updateRideStatus(ride.id, status);
-                      onStatusUpdate();
-                      onClose();
-                    } catch (err) {
-                      console.error("Failed to update ride status", err);
-                    }
-                  }}
-                  className={`px-3 py-1 text-white rounded text-sm hover:opacity-90 ${statusColors[status]}`}
-                >
-                  Set {status}
-                </button>
+                <button key={status} onClick={async () => {
+                  await updateRideStatus(ride.id, status);
+                  onStatusUpdate();
+                  onClose();
+                }} className={`px-4 py-2 rounded text-white text-sm shadow hover:opacity-90 ${statusColors[status]}`}>Set {status}</button>
               ))}
           </div>
-        </div>
-
-        <div className="flex justify-end mt-8">
-          <button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-            Close
-          </button>
         </div>
       </div>
     </div>

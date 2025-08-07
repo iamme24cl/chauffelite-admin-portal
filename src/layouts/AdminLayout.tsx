@@ -3,16 +3,13 @@ import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 
 export default function AdminLayout() {
-
   return (
     <div className="min-h-screen bg-gray-100 flex overflow-x-hidden">
-      {/* Sidebar (desktop) */}
-      <aside className="hidden md:block w-64 bg-white border-r">
-        <Sidebar />
-      </aside>
+      {/* Fixed Sidebar */}
+      <Sidebar />
 
       {/* Main layout area */}
-      <div className="flex-1 flex flex-col w-full">
+      <div className="flex-1 flex flex-col md:ml-64 w-full">
         {/* Header (mobile only) */}
         <div className="md:hidden">
           <Header />

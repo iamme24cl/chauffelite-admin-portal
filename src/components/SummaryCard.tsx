@@ -8,7 +8,7 @@ type SummaryCardProps = {
 
 export default function SummaryCard({ title, value, icon: Icon }: SummaryCardProps) {
   return (
-    <div className="bg-white shadow rounded p-4 flex items-center gap-4">
+    <div className="bg-white shadow rounded-md p-4 flex items-center gap-4">
       <div className="p-2 bg-gray-100 rounded-full">
         <Icon className="h-6 w-6 text-gray-700" />
       </div>

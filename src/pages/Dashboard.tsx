@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchDrivers } from "../services/driverService";
 import { fetchVehicles } from "../services/vehicleService";
 import { fetchRides } from "../services/rideService";
@@ -43,10 +43,9 @@ export default function Dashboard() {
   const [rides, setRides] = useState<Ride[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     if (!user?.company_id) return;
     setLoading(true);
-
     const [d, v, r] = await Promise.all([
       fetchDrivers(),
       fetchVehicles(),
@@ -56,10 +55,13 @@ export default function Dashboard() {
     setDrivers(d);
     setVehicles(v);
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
+    const now = new Date();
+    const utcYear = now.getUTCFullYear();
+    const utcMonth = now.getUTCMonth();
+    const utcDate = now.getUTCDate();
+
+    const today = new Date(Date.UTC(utcYear, utcMonth, utcDate, 0, 0, 0));
+    const tomorrow = new Date(Date.UTC(utcYear, utcMonth, utcDate + 1, 0, 0, 0));
 
     const todayRides = r.filter((ride: Ride) => {
       if (!ride.scheduled_start) return false;
@@ -69,11 +71,12 @@ export default function Dashboard() {
 
     setRides(todayRides);
     setLoading(false);
-  };
+  }, [user?.company_id]); // ✅ Only changes when user?.company_id changes
 
   useEffect(() => {
     load();
-  }, [user?.company_id]);
+  }, [load]);
+
 
   const inProgressRides = rides.filter((r) => r.status === "IN_PROGRESS");
 

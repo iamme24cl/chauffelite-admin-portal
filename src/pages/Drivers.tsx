@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
-import DriverTable from '../components/DriverTable';
-import DriverFormModal from '../components/DriverFormModal';
+import { useState, useEffect } from "react";
+import DriverTable from "../components/DriverTable";
+import DriverFormModal from "../components/DriverFormModal";
 import {
   fetchDrivers,
   createDriver,
   updateDriver,
-  deleteDriver,
   toggleDriverAvailability,
-} from '../services/driverService';
-import { Driver, DriverFormInput } from '../types';
+} from "../services/driverService";
+import { Driver, DriverFormInput } from "../types";
+import { Users, Plus } from "lucide-react";
+// import Lottie from "lottie-react";
+// import drivingAnimation from "../assets/driving.json"; // optional animation
 
 export default function DriversPage() {
   const [drivers, setDrivers] = useState<Driver[]>([]);
@@ -58,18 +60,37 @@ export default function DriversPage() {
   };
 
   return (
-    <div className="px-4 sm:px-6 py-6 max-w-screen-xl mx-auto">
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold text-gray-800">Drivers</h1>
+    <div className="px-4 sm:px-6 py-6 max-w-screen-xl mx-auto space-y-6">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2 text-blue-600">
+          <Users className="w-6 h-6" />
+          <h1 className="text-2xl font-bold text-gray-800">Drivers</h1>
+        </div>
+
         <button
-          onClick={() => setModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition"
+          onClick={() => {
+            setEditingDriver(null);
+            setModalOpen(true)
+          }}
+          className="
+            flex items-center justify-center
+            w-12 h-12
+            bg-gradient-to-br from-blue-500 to-indigo-600
+            text-white rounded-full shadow-lg
+            hover:from-blue-600 hover:to-indigo-700
+            active:scale-95
+            transition duration-200
+          "
+          aria-label="Add Driver"
         >
-          Add Driver
+          <Plus className="w-6 h-6" />
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg p-6 overflow-x-auto">
+      {/* Optional animation */}
+      {/* <Lottie animationData={drivingAnimation} className="w-full max-w-xl mx-auto" loop /> */}
+
+      <div className="bg-white rounded shadow-lg p-6 overflow-x-auto animate-fadeIn">
         <DriverTable
           drivers={drivers}
           onEdit={(driver) => {

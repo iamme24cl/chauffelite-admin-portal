@@ -26,3 +26,26 @@ body {
   gap: 0.5rem;
 }
 
+.fc-button:focus {
+  outline: none !important;
+  box-shadow: none !important; /* Tailwind blue-500 */
+}
+
+@layer utilities {
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease forwards;
+  }
+}
+
+
