@@ -26,17 +26,43 @@ export type DriverFormInput = {
     } 
 };
 
+export interface VehicleClass {
+  id: string;
+  title: string; // e.g., "SUV", "Sedan"
+  key: string;
+}
+
 export interface Vehicle {
   id: string;
   plate: string;
   year: number;
   make: string;
   model: string;
-  vehicle_class: string;
+  vehicle_class: VehicleClass;
   available: boolean;
   company_id: string;
   created_at: string;
   updated_at: string;
+  pricing?: {
+    ONE_WAY?: {
+      base_fare: number;
+      per_mile: number;
+      per_minute: number;
+      night_surcharge?: number;
+      city_modifier?: number;
+    };
+    ROUND_TRIP?: {
+      base_fare: number;
+      per_mile: number;
+      per_minute: number;
+      night_surcharge?: number;
+      city_modifier?: number;
+    };
+    HOURLY?: {
+      hourly_rate?: number;
+      min_hours?: number;
+    };
+  };
 }
 
 export interface VehicleFormInput {
@@ -45,7 +71,7 @@ export interface VehicleFormInput {
   year: number;
   make: string;
   model: string;
-  vehicle_class: string;
+  vehicle_class: string; // still submit just the class ID to the backend
   pricing?: {
     ONE_WAY?: {
       base_fare: number;
@@ -106,24 +132,50 @@ export interface RideSession {
 export interface Company {
   id: string;
   name: string;
+  tagline?: string;
+  description?: string;
   logo_url?: string;
   theme: {
     primary_color?: string;
+    secondary_color?: string;
     [key: string]: any;
   };
+  support_email?: string;
+  support_phone?: string;
+  location?: {
+    lat?: number;
+    lng?: number;
+    [key: string]: any;
+  };
+  gallery?: string[];
   created_at: string;
   updated_at: string;
+  [key: string]: any;
 }
 
 export interface CompanyForm {
   name: string;
+  tagline?: string;
+  description?: string;
   logo_url?: string;
   theme?: {
     primary_color?: string;
     secondary_color?: string;
     [key: string]: any;
   };
+  support_email?: string;
+  support_phone?: string;
+  location?: {
+    lat?: number;
+    lng?: number;
+    [key: string]: any;
+  };
+  gallery?: string[];
+  created_at?: string;
+  updated_at?: string;
+  [key: string]: any;
 }
+
 
 
 

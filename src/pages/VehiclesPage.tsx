@@ -5,10 +5,10 @@ import {
   fetchVehicles,
   createVehicle,
   updateVehicle,
-  deleteVehicle,
   toggleVehicleAvailability,
 } from "../services/vehicleService";
 import { Vehicle, VehicleFormInput } from "../types";
+import { Plus, CarFront } from "lucide-react"; // ✅ added CarFront icon
 
 export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -42,11 +42,6 @@ export default function VehiclesPage() {
     await load();
   };
 
-  const handleDelete = async (id: string) => {
-    await deleteVehicle(id);
-    await load();
-  };
-
   const handleToggleAvailability = async (vehicleId: string, current: boolean) => {
     try {
       await toggleVehicleAvailability(vehicleId, current);
@@ -60,30 +55,53 @@ export default function VehiclesPage() {
     }
   };
 
+  // ✅ Convert Vehicle -> VehicleFormInput
+  const transformVehicleToFormInput = (vehicle: Vehicle): VehicleFormInput => ({
+    id: vehicle.id,
+    plate: vehicle.plate,
+    year: vehicle.year,
+    make: vehicle.make,
+    model: vehicle.model,
+    vehicle_class: vehicle.vehicle_class.id,
+    pricing: vehicle.pricing,
+  });
 
   return (
     <div className="px-4 sm:px-6 py-6 max-w-screen-xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold text-gray-800">Vehicles</h1>
+        <div className="flex items-center gap-2 text-blue-700">
+          <CarFront className="w-6 h-6" />
+          <h1 className="text-2xl font-bold text-gray-800">Vehicles</h1>
+        </div>
+
+        {/* Circular + Button */}
         <button
           onClick={() => {
             setEditingVehicle(null);
             setModalOpen(true);
           }}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition"
+          className="
+            flex items-center justify-center
+            w-12 h-12
+            bg-gradient-to-br from-blue-500 to-indigo-600
+            text-white rounded-full shadow-lg
+            hover:from-blue-600 hover:to-indigo-700
+            active:scale-95
+            transition duration-200
+          "
+          aria-label="Add Vehicle"
         >
-          + Add Vehicle
+          <Plus className="w-6 h-6" />
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg p-6 overflow-x-auto">
+      <div className="bg-white rounded shadow-lg p-6 overflow-x-auto">
         <VehicleTable
           vehicles={vehicles}
           onEdit={(vehicle) => {
             setEditingVehicle(vehicle);
             setModalOpen(true);
           }}
-          onDelete={handleDelete}
           onToggleAvailability={handleToggleAvailability}
         />
       </div>
@@ -95,7 +113,11 @@ export default function VehiclesPage() {
           setEditingVehicle(null);
         }}
         onSubmit={handleSave}
-        initial={editingVehicle || undefined}
+        initial={
+          editingVehicle
+            ? transformVehicleToFormInput(editingVehicle)
+            : undefined
+        }
       />
     </div>
   );
