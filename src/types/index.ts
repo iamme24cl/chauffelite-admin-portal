@@ -132,24 +132,50 @@ export interface RideSession {
 export interface Company {
   id: string;
   name: string;
+  tagline?: string;
+  description?: string;
   logo_url?: string;
   theme: {
     primary_color?: string;
+    secondary_color?: string;
     [key: string]: any;
   };
+  support_email?: string;
+  support_phone?: string;
+  location?: {
+    lat?: number;
+    lng?: number;
+    [key: string]: any;
+  };
+  gallery?: string[];
   created_at: string;
   updated_at: string;
+  [key: string]: any;
 }
 
 export interface CompanyForm {
   name: string;
+  tagline?: string;
+  description?: string;
   logo_url?: string;
   theme?: {
     primary_color?: string;
     secondary_color?: string;
     [key: string]: any;
   };
+  support_email?: string;
+  support_phone?: string;
+  location?: {
+    lat?: number;
+    lng?: number;
+    [key: string]: any;
+  };
+  gallery?: string[];
+  created_at?: string;
+  updated_at?: string;
+  [key: string]: any;
 }
+
 
 
 

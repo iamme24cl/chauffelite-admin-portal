@@ -95,6 +95,29 @@ export default function CompanyProfileCard() {
             </div>
           </div>
         </div>
+        {/* Tagline */}
+        <div>
+          <p className="text-sm text-gray-500 mb-1">Tagline</p>
+          <p className="text-base font-medium text-gray-800">{company.tagline || "—"}</p>
+        </div>
+
+        {/* Description */}
+        <div>
+          <p className="text-sm text-gray-500 mb-1">Description</p>
+          <p className="text-base text-gray-700">{company.description || "—"}</p>
+        </div>
+
+        {/* Support Email */}
+        <div>
+          <p className="text-sm text-gray-500 mb-1">Support Email</p>
+          <p className="text-base text-gray-800">{company.support_email || "—"}</p>
+        </div>
+
+        {/* Support Phone */}
+        <div>
+          <p className="text-sm text-gray-500 mb-1">Support Phone</p>
+          <p className="text-base text-gray-800">{company.support_phone || "—"}</p>
+        </div>
       </div>
 
       {/* Modal */}
