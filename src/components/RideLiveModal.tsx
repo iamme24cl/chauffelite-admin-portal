@@ -64,9 +64,25 @@ export default function RideLiveModal({
     ? [session.driver_location.lat, session.driver_location.lng]
     : null;
 
-  const pickupLocation: LatLngExpression = [ride.pickup.lat, ride.pickup.lng];
-  const dropoffLocation: LatLngExpression = [ride.dropoff.lat, ride.dropoff.lng];
-  const fitPoints: LatLngExpression[] = [pickupLocation, dropoffLocation, ...(driverLocation ? [driverLocation] : [])];
+  const pickupLocation: LatLngExpression | null =
+    ride?.pickup && typeof ride.pickup.lat === "number" && typeof ride.pickup.lng === "number"
+      ? [ride.pickup.lat, ride.pickup.lng]
+      : null;
+
+  const hasDropoff =
+    !!ride?.dropoff &&
+    typeof ride.dropoff.lat === "number" &&
+    typeof ride.dropoff.lng === "number";
+
+  const dropoffLocation: LatLngExpression | null = hasDropoff
+    ? [ride.dropoff!.lat, ride.dropoff!.lng]
+    : null;
+
+  const fitPoints: LatLngExpression[] = [
+    ...(pickupLocation ? [pickupLocation] : []),
+    ...(dropoffLocation ? [dropoffLocation] : []),
+    ...(driverLocation ? [driverLocation] : []),
+  ];
 
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -147,23 +163,41 @@ export default function RideLiveModal({
             <p className="flex items-center gap-2"><Calendar className="w-4 h-4" /> <strong>Scheduled:</strong> {ride.scheduled_start ? `${new Date(ride.scheduled_start).toLocaleString()} → ${ride.scheduled_end ? new Date(ride.scheduled_end).toLocaleString() : "—"}` : "—"}</p>
           </div>
           <div className="space-y-2">
-            <p className="flex items-center gap-2"><MapPin className="w-4 h-4" /> <strong>Pickup:</strong> {ride.pickup.address}</p>
-            <p className="flex items-center gap-2"><MapPin className="w-4 h-4 text-red-400" /> <strong>Dropoff:</strong> {ride.dropoff.address}</p>
+            <p className="flex items-center gap-2">
+              <MapPin className="w-4 h-4" /> <strong>Pickup:</strong> {ride.pickup?.address ?? "—"}
+            </p>
+            <p className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-red-400" /> <strong>Dropoff:</strong>{" "}
+              {ride.dropoff?.address ?? (ride.trip_type === "HOURLY" ? "— hourly (no dropoff)" : "—")}
+            </p>
             <p className="flex items-center gap-2"><User className="w-4 h-4" /> <strong>Driver:</strong> {currentDriver?.user?.name || "Unassigned"}</p>
             <p className="flex items-center gap-2"><Car className="w-4 h-4" /> <strong>Vehicle:</strong> {currentVehicle ? `${currentVehicle.make} ${currentVehicle.model} (${currentVehicle.plate})` : "Unassigned"}</p>
           </div>
         </div>
 
         {/* Map */}
-        <div className="mb-8">
-          <MapContainer center={pickupLocation} zoom={13} scrollWheelZoom={false} style={{ height: "300px", width: "100%" }} className="rounded-lg overflow-hidden shadow border">
-            <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker position={pickupLocation} icon={greenIcon}><Popup>Pickup</Popup></Marker>
-            <Marker position={dropoffLocation} icon={redIcon}><Popup>Dropoff</Popup></Marker>
-            {driverLocation && <Marker position={driverLocation}><Popup>Driver Location</Popup></Marker>}
-            <FitMapToBounds points={fitPoints} />
-          </MapContainer>
-        </div>
+        {pickupLocation && (
+          <div className="mb-8">
+            <MapContainer
+              center={pickupLocation}
+              zoom={13}
+              scrollWheelZoom={false}
+              style={{ height: "300px", width: "100%" }}
+              className="rounded-lg overflow-hidden shadow border"
+            >
+              <TileLayer
+                attribution='&copy; OpenStreetMap contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <Marker position={pickupLocation} icon={greenIcon}><Popup>Pickup</Popup></Marker>
+              {dropoffLocation && (
+                <Marker position={dropoffLocation} icon={redIcon}><Popup>Dropoff</Popup></Marker>
+              )}
+              {driverLocation && <Marker position={driverLocation}><Popup>Driver Location</Popup></Marker>}
+              <FitMapToBounds points={fitPoints} />
+            </MapContainer>
+          </div>
+        )}
 
         {/* Assignments */}
         <div className="grid sm:grid-cols-2 gap-6 mb-8">
@@ -185,7 +219,7 @@ export default function RideLiveModal({
             <div className="flex gap-2">
               <select className="w-full border px-3 py-2 rounded text-sm" value={selectedVehicleId} onChange={(e) => setSelectedVehicleId(e.target.value)}>
                 <option value="">Select vehicle</option>
-                {vehicles.filter((v) => v.vehicle_class.key === ride.vehicle_class).map((vehicle) => (
+                {vehicles.filter((v) => v.vehicle_class?.key === ride.vehicle_class).map((vehicle) => (
                   <option key={vehicle.id} value={vehicle.id}>{vehicle.make} {vehicle.model} ({vehicle.plate})</option>
                 ))}
               </select>
