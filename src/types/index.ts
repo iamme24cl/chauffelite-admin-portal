@@ -106,16 +106,18 @@ export interface Ride {
     lng: number;
     address: string;
   };
-  dropoff: {
+  dropoff?: {
     lat: number;
     lng: number;
     address: string;
-  };
+  } | null;
   status: "REQUESTED" | "ACCEPTED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
   trip_type?: "ONE_WAY" | "ROUND_TRIP" | "HOURLY"; 
   fare?: number;                                 
   scheduled_start?: string;                      
-  scheduled_end?: string;                        
+  scheduled_end?: string;  
+  return_shceduled_start?: string;
+  return_scheduled_end?: string;                      
   created_at: string;
   updated_at: string;
 }
