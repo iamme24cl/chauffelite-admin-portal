@@ -42,8 +42,12 @@ export default function RideTable({
                 <td className="px-4 py-2 max-w-[200px] truncate" title={ride.pickup.address}>
                   {ride.pickup.address}
                 </td>
-                <td className="px-4 py-2 max-w-[200px] truncate" title={ride.dropoff.address}>
-                  {ride.dropoff.address}
+                <td className="px-4 py-2 max-w-[200px] truncate" title={ride.dropoff?.address ?? (ride.trip_type === 'HOURLY' ? 'No dropoff (hourly)' : '-')}>
+                  {ride.dropoff?.address ?? (
+                    <span className="text-muted-foreground italic">
+                      {ride.trip_type === 'HOURLY' ? 'No dropoff (hourly)' : '—'}
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-2">
                   <span
